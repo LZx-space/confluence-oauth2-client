@@ -1,0 +1,39 @@
+<atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2">
+    <plugin-info>
+        <description>${project.description}</description>
+        <version>${project.version}</version>
+        <vendor name="${project.organization.name}" url="${project.organization.url}"/>
+        <param name="plugin-icon">images/plugin-icon.png</param>
+        <param name="plugin-logo">images/plugin-logo.png</param>
+    </plugin-info>
+
+    <!-- add our i18n resource -->
+    <resource type="i18n" name="i18n" location="confluence-oauth2-client"/>
+
+    <!-- add our web resources -->
+    <web-resource key="confluence-oauth2-client-resources" name="confluence-oauth2-client Web Resources">
+        <description>自定义UI相关</description>
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <dependency>com.atlassian.auiplugin:aui-select2</dependency>
+        <resource type="download" name="confluence-oauth2-client.css" location="/css/confluence-oauth2-client.css"/>
+        <resource type="download" name="confluence-oauth2-client.js" location="/js/confluence-oauth2-client.js"/>
+        <resource type="download" name="images/" location="/images"/>
+
+        <context>atl.general</context>
+    </web-resource>
+
+    <servlet name="construct a authorize request and then apply a authorization code"
+             key="oauth2.client.authorization.request.redirect"
+             class="org.lzx.confluence.oauth2.servlet.OAuth2AuthorizationRequestRedirectServlet">
+        <description>构造并发起授权请求</description>
+        <!-- 请求路径必须为这个，查看AuthorizeEndpointRequestResolver -->
+        <url-pattern>/oauth2/authorization/*</url-pattern>
+    </servlet>
+    <servlet name="apply access token and use it for apply userInfo, then login"
+             key="oauth2.client.login"
+             class="org.lzx.confluence.oauth2.servlet.OAuth2LoginServlet">
+        <description>处理授权码，从授权服务器获取用户信息用于登录</description>
+        <!-- 请求路径必须为这个，查看TokenEndpointRequestResolver -->
+        <url-pattern>/login/oauth2/code/*</url-pattern>
+    </servlet>
+</atlassian-plugin>
